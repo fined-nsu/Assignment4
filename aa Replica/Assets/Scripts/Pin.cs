@@ -1,19 +1,23 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Pin : MonoBehaviour
 {
     private bool isPinned = false;
 
-    public float speed = 20f;
+    public static float speed = 100f;
     public Rigidbody2D rb;
+
+    private void Start()
+    {
+        speed = 100f;
+        speed += PlayerPrefs.GetFloat("PinSpeed");
+        Debug.Log(Pin.speed);
+    }
 
     private void Update()
     {
         if (!isPinned)
         rb.MovePosition(rb.position + Vector2.up * speed * Time.deltaTime);
-        
     }
 
     private void OnTriggerEnter2D(Collider2D col)
@@ -26,8 +30,8 @@ public class Pin : MonoBehaviour
         }
         else if (col.tag == "Pin")
         {
+            Destroy(Spawner.clone);
             FindObjectOfType<GameManager>().EndGame();
         }
     }
-
 }

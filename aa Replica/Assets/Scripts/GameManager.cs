@@ -11,9 +11,9 @@ public class GameManager : MonoBehaviour
     public Text livesText;
     public Text timerText;
 
-    private int playerLives;
+    public static int playerLives = 3;
     private string playerName;
-    public int timerValue;
+    public static float timerValue = 30f;
     public Rotator rotator;
     public Spawner sp;
 
@@ -24,6 +24,8 @@ public class GameManager : MonoBehaviour
         panel.SetActive(false);
         playerName = PlayerPrefs.GetString("Player");
         playerLives = PlayerPrefs.GetInt("Lives");
+        Pin.speed = PlayerPrefs.GetFloat("PinSpeed");
+        timerValue = PlayerPrefs.GetFloat("Time");
     }
 
     private void Update()
@@ -34,9 +36,21 @@ public class GameManager : MonoBehaviour
             panel.SetActive(true);
             sp.enabled = false;
         }
-        timerText.text = "Time Remaining: " + timerValue;
+        
+        
         livesText.text = "Lives: " + playerLives;
         playerNameText.text = "Player: " + playerName;
+
+        if (timerValue >= 0)
+        {
+            timerText.text = "Time Remaining: " + timerValue.ToString("F2");
+            timerValue -= Time.deltaTime;
+        }
+        else
+        {
+            timerText.text = "Time is up!";
+            SceneManager.LoadScene(2);
+        }
     }
 
     public void EndGame()
@@ -44,22 +58,29 @@ public class GameManager : MonoBehaviour
         
         if (gameHasEnded)
             return;
-        
-        rotator.enabled = false;
-        sp.enabled = false;
+        if (playerLives <= 0)
+        {
+            rotator.enabled = false;
+            sp.enabled = false;
+        }
 
         animator.SetTrigger("EndGame");
-
-        gameHasEnded = true;
+        Destroy(Spawner.clone, 0.25f);
+        
+        if (playerLives <= 0)
+        {
+            gameHasEnded = true;
+        }
     }
 
     public void RestartLevel()
     {
         playerLives--;
-        if (playerLives == 0 || timerValue == 0)
+        if (playerLives == 0 || timerValue <= 0)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         }
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        Score.PinCount = 0;
+
     }
 }

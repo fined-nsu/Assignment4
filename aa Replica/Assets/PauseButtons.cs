@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PauseButtons : MonoBehaviour
@@ -18,6 +19,23 @@ public class PauseButtons : MonoBehaviour
 
     }
 
+    public void SaveGame()
+    {
+        PlayerPrefs.SetFloat("RemainingTime", GameManager.timerValue);
+        PlayerPrefs.SetInt("RemainingLives", GameManager.playerLives);
+        PlayerPrefs.SetInt("CurrentScore", Score.PinCount);
+    }
 
+    public void LoadGame()
+    {
+        GameManager.timerValue = PlayerPrefs.GetFloat("RemainingTime");
+        GameManager.playerLives = PlayerPrefs.GetInt("RemainingLives");
+        Score.PinCount = PlayerPrefs.GetInt("CurrentScore");
+        
+    }
 
+    public void ExitToMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
 }

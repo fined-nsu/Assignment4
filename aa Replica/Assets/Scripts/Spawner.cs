@@ -5,6 +5,7 @@ using UnityEngine;
 public class Spawner : MonoBehaviour
 {
     public GameObject pinPrefab;
+    public static GameObject clone;
 
     private void Update()
     {
@@ -16,6 +17,6 @@ public class Spawner : MonoBehaviour
 
     void SpawnPin()
     {
-        Instantiate(pinPrefab, transform.position, transform.rotation);
+        clone = Instantiate(pinPrefab, transform.position, transform.rotation);
     }
 }
